@@ -1,8 +1,8 @@
 %--------------------------------------------------------------------------
-% Company: ETMC Exponenta                                                        
-% Engineer: Kiselnikov Andrei                                                    
+% Company: ETMC Exponenta                                                  
+% Engineer: Kiselnikov Andrei                                              
 %                                                                       
-% Revision 0.01 - File Created 15.11.2019                                        
+% Revision 0.01 - File Created 15.11.2019                                  
 % This example provided strictly for educational purposes!
 %
 % Brief : LMS filter script
@@ -13,7 +13,7 @@ close all
 
 % Paremeters --------------------------------------------------------------
 % Num of data points
-N=200;
+N=2000;
 % Input signal
 input_signal = randn(N,1);
 % Explore system (fir filter)
@@ -21,7 +21,7 @@ b = [-0.0349249458233189, ...
     -0.0370641891927234,  ...
     0.0209236117413746,   ...
     0.136805534741694,    ...
-    0,...%0.256227903132472,    ... % try differnt values
+    0.256227903132472,    ... % try differnt values
     0.307102999793201,    ...
     0.256227903132472,    ...
     0.136805534741694,    ...
@@ -42,7 +42,9 @@ mu = 0.1;
 %y = lsim(transfer_function,input_signal);
 y = filter (b,1,input_signal);
 % Adding noise to signal
-y_n = y+randn(N,1).*noise_factor;
+tmp = randn(N,1);
+tmp_sh = [tmp(10:end)' tmp(1:9)']';
+y_n = y+tmp.*noise_factor;
 %--------------------------------------------------------------------------
 
 % LMS algorithm performing ------------------------------------------------
@@ -56,7 +58,7 @@ e_r = zeros (N-sys_order,1);
 y_a = zeros (N-sys_order,1);
 
 for i = sys_order : N 
-	u = input_signal(i:-1:i+1-sys_order);
+	u = tmp_sh(i:-1:i+1-sys_order);
     y_a(i+1-sys_order)= w' * u; 
     e_f(i+1-sys_order) = y_n(i) - y_a(i+1-sys_order);
 	w = w + mu * u *  e_f(i+1-sys_order);

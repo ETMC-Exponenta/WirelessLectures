@@ -13,7 +13,7 @@ close all
 
 % Parameters --------------------------------------------------------------
 %Number of bits
-N =  128;
+N =  10024;
 
 % The data sequence formation
 data = round(rand(N,1));
@@ -27,7 +27,7 @@ symbols_per_step = 8;
 eq_len = 21;
 
 %Convergence multiplier
-mu = 0.1;
+mu = 0.05;
 %--------------------------------------------------------------------------
 
 % Rcos fir design ---------------------------------------------------------
@@ -39,7 +39,7 @@ nyq_filter =  comm.RaisedCosineTransmitFilter(...
 %--------------------------------------------------------------------------
 
 % Channel symbols design --------------------------------------------------
-reference_signal =  upfirdn(data, nyq_filter.coeffs.Numerator, symbols_per_step);
+reference_signal =  rand(N*symbols_per_step,1);%upfirdn(data, nyq_filter.coeffs.Numerator, symbols_per_step);
 %--------------------------------------------------------------------------
 
 % Channel design ----------------------------------------------------------
@@ -107,12 +107,12 @@ title("Channel signal vs Equalized signal");
 
 %Error between channel signal and reference signal
 subplot (2,2,3);
-plot(movmean(abs(err),span_in_symbols));
+plot(err,span_in_symbols);
 grid on
 title("Average error behavior");
 %Error between channel signal and reference signal
 subplot (2,2,4);
-plot(movmean(abs(reference_signal(1:length(reference_signal)-channel_grp_delay)-channel_output),span_in_symbols));
+plot(reference_signal(1:length(reference_signal)-channel_grp_delay)-channel_output,span_in_symbols);
 grid on
 title("Average error on the Equalizer input");
 %--------------------------------------------------------------------------
